@@ -1,0 +1,8 @@
+由于版本原因，本文复现使用自己的代码
+模型结构和官方相同
+使用pytorch
+运行BEPS_train_by_TED.py即可运行，结果存储在BEPS_train_byTED中 我们提供了重新训练的模型model45_2
+而运行官方实现的代码通过运行VDCNN_tf/test.py  结果会保存在VDCNN_tf/result中。
+注意 官方是使用pytorch实现的
+
+
