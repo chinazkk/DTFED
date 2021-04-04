@@ -1,39 +1,44 @@
-# TED
+# DTFED
 
-#### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+## Introduction
+DTFED: 面向机器学习的纹理滤波与边缘检测训练数据集
+> 本数据集可于纹理滤波和边缘检测任务的训练
 
-#### 软件架构
-软件架构说明
+## Requirements
+- Python 3.7
+- pytorch 1.8.1
+- matplotlib 3.4.1 
+
+## Usage
+### Installation
+- Download the repository.
+```
+git clone https://gitee.com/Chinazjk/DTFED.git
+```
+- Install python dependencies.
+```
+pip3 install torch torchvision torchaudio
+pip3 install matplotlib
+```
+- Download the dataset.
+   > [百度云盘](https://pan.baidu.com/s/1-AriDUY8-m-LaFCrCYTrqg) 提取码: ccik
+
+### Test
+#### BDCN
+> run `test_DTFED.py` in `.\BDCN` 
+>```
+># 如果需要测试BSDS500、NYUD数据集训练的模型
+>run test_DTFED.py -t [BSDS500\NYUD]
+>```
+#### BEPS
+> run  `BEPS_train_by_TED.py` in `.\BEPS`
+>
+> 由于版本原因，本文复现使用自己的代码模型结构和官方相同,使用pytorch复现。运行`BEPS_train_by_TED.py`即可运行，结果存储在`BEPS_train_byTED`中 我们提供了重新训练的模型`model45_2`
+而运行官方实现的代码通过运行`VDCNN_tf/test.py`  结果会保存在`VDCNN_tf/result`中。
+> 
+>*note*: 官方是使用pytorch实现的
+
+### Result
+> 结果分别保存在对应方法的 `result` 目录下
 
 
-#### 安装教程
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)

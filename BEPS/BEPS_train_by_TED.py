@@ -13,13 +13,15 @@ from dataset import Dataset
 import time
 import torch.nn as nn
 
+
 def get_today_date():
     return time.strftime("%Y%m%d")
 
-Train = True
-Test = False
+
+Train = False
+Test = True
 parser = argparse.ArgumentParser()
-parser.add_argument('--data_url', type=str, default=r'../dataset/minitrain/eti/',  #加入自己需要的训练路径
+parser.add_argument('--data_url', type=str, default=r'../dataset/minitrain/eti/',  # 加入自己需要的训练路径
                     help=' path of dataset')
 parser.add_argument('--train_url', type=str, default=r'../models',
                     help=' path of model')
@@ -30,6 +32,7 @@ args, unparsed = parser.parse_known_args()
 BATCH_SIZE = 10
 EPOCH = 100
 best_score = 0
+
 
 ## 定义网络
 class BEPS(nn.Module):
@@ -86,8 +89,10 @@ class BEPS(nn.Module):
             torch.nn.BatchNorm2d(64),
             torch.nn.Conv2d(kernel_size=3, in_channels=64, out_channels=3, padding=1),
         )
+
     def forward(self, x):
-        return torch.sigmoid(x+self.block(x))
+        return torch.sigmoid(x + self.block(x))
+
 
 train_transform = transforms.Compose([
     # transforms.Resize((224,224)),
@@ -96,11 +101,8 @@ train_transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.545, 0.506, 0.472], std=[0.169, 0.170, 0.172])
 ])
-train_img = Dataset(root=args.data_url, mean=True)
 
-train_loader = torch.utils.data.DataLoader(train_img, batch_size=BATCH_SIZE, pin_memory=True, shuffle=True)
-
-test_img = Dataset(root=r'../dataset/test',  test=True)   # 加入自己需要的测试路径
+test_img = Dataset(root=r'../dataset/test', test=True)  # 加入自己需要的测试路径
 test_loader = torch.utils.data.DataLoader(test_img, batch_size=1, shuffle=False)
 
 # 判断gpu是否可用
@@ -123,28 +125,28 @@ scheduler = lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.99)
 
 # loss function
 criterion = torch.nn.BCELoss()
+# if test in cpu
+model.load_state_dict(torch.load(r"model45_2.pth", map_location=torch.device('cpu')))
+# else
+# model.load_state_dict(torch.load(r"model45_2.pth"))
 
-length = len(train_loader)
-model.load_state_dict(torch.load(r"model45_2.pth"))
 if Train:
+    train_img = Dataset(root=args.data_url, mean=True)
+    train_loader = torch.utils.data.DataLoader(train_img, batch_size=BATCH_SIZE, pin_memory=True, shuffle=True)
+    length = len(train_loader)
     for epoch in range(EPOCH):
         scheduler.step()
         lr = scheduler.get_lr()
 
         print("Start train_bin the %d epoch!" % (epoch + 1))
         for i, data in enumerate(train_loader):
-            x_train,  z_train, edge_gt = data
+            x_train, z_train, edge_gt = data
             x_train = Variable(x_train.float())
-
             z_train = Variable(z_train.float())
-
             edge_gt = Variable(edge_gt)
             x_train = x_train.to(device)
-
             z_train = z_train.to(device)
-
             edge_gt = edge_gt.to(device)
-
             optimizer.zero_grad()  # 将梯度初始化为零  每个batch的梯度并不需要被累加
             output = model(x_train)
             l1_loss = torch.nn.L1Loss()(output, z_train)
@@ -154,7 +156,7 @@ if Train:
             all_step += 1
             print(str(i + 1) + "/" + str(length) + " Loss:" + str(loss.item()))
         if epoch % 15 == 0:
-            torch.save(model.state_dict(),"model%d.pth" % (epoch))
+            torch.save(model.state_dict(), "model%d.pth" % (epoch))
 if Test:
     model.eval()
     for i, data in enumerate(test_loader):
@@ -182,5 +184,4 @@ if Test:
             res = res[0].transpose(1, 2, 0) * 255
             res = res.astype(np.uint8)
             cv2.imwrite(os.path.join(os.path.join(dir, "filter"),
-                                        os.path.basename(x_path).split('.')[0] + ".jpg"), res)
-
+                                     os.path.basename(x_path).split('.')[0] + ".jpg"), res)
